@@ -1,0 +1,9 @@
+const {test}=require('node:test');const assert=require('node:assert/strict');
+const {validate,backup,csv}=require('./public/data');
+const sample=()=>({name:'65W charger',supplier:'Supplier',checks:{collect:true,appearance:true,wattage:true},results:{appearance:'Good, "clean" finish\nNo scratches'},notes:'=HYPERLINK("bad")',time:'09:30',enabled:true});
+test('backup round trip preserves findings and normalizes out-of-sequence checks',()=>{const record=backup(sample());const restored=validate(JSON.parse(JSON.stringify(record)));assert.equal(restored.name,'65W charger');assert.equal(restored.checks.appearance,true);assert.equal(restored.checks.wattage,false);assert.equal(restored.results.appearance,sample().results.appearance);assert.equal(restored.time,'09:30');});
+test('legacy JSON exports still restore',()=>{assert.equal(validate({...sample(),workflow:[],exportedAt:'old'}).supplier,'Supplier');});
+test('reloading local data preserves the daily reminder marker',()=>{assert.equal(validate({...sample(),notified:'2026-11-11'}).notified,'2026-11-11');});
+test('invalid input cannot replace the current record',()=>{for(const record of [null,[],{}, {schemaVersion:5,state:sample()},{schemaVersion:2,state:{}}])assert.throws(()=>validate(record));});
+test('CSV quotes commas, embedded quotes and newlines, and neutralizes formulas',()=>{const result=csv(sample());assert.ok(result.startsWith('\uFEFF"Sample"'));assert.ok(result.includes('"Good, ""clean"" finish\nNo scratches"'));assert.ok(result.includes('"\'=HYPERLINK(""bad"")"'));});
+test('untrusted backup only restores whitelisted fields with bounded text',()=>{const restored=validate({...sample(),token:'secret',time:'99:99',name:'x'.repeat(1000)});assert.equal(restored.token,undefined);assert.equal(restored.name.length,120);assert.equal(restored.time,'09:00');});

@@ -1,0 +1,8 @@
+// Dependency-free rasterization of our simple vector logo into installable PNG sizes.
+const fs=require('node:fs');const path=require('node:path');const zlib=require('node:zlib');
+function crc32(data){let crc=0xffffffff;for(const b of data){crc^=b;for(let i=0;i<8;i++)crc=(crc>>>1)^((crc&1)?0xedb88320:0);}return (crc^0xffffffff)>>>0;}
+function chunk(type,data){const name=Buffer.from(type);const size=Buffer.alloc(4);size.writeUInt32BE(data.length);const crc=Buffer.alloc(4);crc.writeUInt32BE(crc32(Buffer.concat([name,data])));return Buffer.concat([size,name,data,crc]);}
+const polygon=[[278,102],[170,278],[243,278],[231,410],[342,223],[265,223]];
+function inside(x,y){let result=false;for(let i=0,j=polygon.length-1;i<polygon.length;j=i++){const [a,b]=polygon[i],[c,d]=polygon[j];if(((b>y)!==(d>y))&&(x<(c-a)*(y-b)/(d-b)+a))result=!result;}return result;}
+function png(size){const data=Buffer.alloc((size*3+1)*size);for(let y=0;y<size;y++){for(let x=0;x<size;x++){let n=0;for(const dx of [.25,.75])for(const dy of [.25,.75])if(inside((x+dx)*512/size,(y+dy)*512/size))n++;const offset=y*(size*3+1)+1+x*3;[40,116,83].forEach((c,i)=>data[offset+i]=Math.round(c+(255-c)*n/4));}}const header=Buffer.alloc(13);header.writeUInt32BE(size);header.writeUInt32BE(size,4);header[8]=8;header[9]=2;return Buffer.concat([Buffer.from([137,80,78,71,13,10,26,10]),chunk('IHDR',header),chunk('IDAT',zlib.deflateSync(data)),chunk('IEND',Buffer.alloc(0))]);}
+const dir=path.join(__dirname,'../public/icons');fs.mkdirSync(dir,{recursive:true});for(const size of [180,192,512])fs.writeFileSync(path.join(dir,size===180?'apple-touch-icon.png':`icon-${size}.png`),png(size));
