@@ -1,5 +1,5 @@
 /* Increment the version whenever an app-shell file changes. Never cache Drive or OAuth requests. */
-const VERSION = 'charger-flow-v2';
+const VERSION = 'purchasing-control-v3';
 const CACHE = `${VERSION}:${self.registration.scope}`;
 const ASSETS = ['./','index.html','style.css','mobile.css','workflow.js','data.js','config.js','app.js','drive.js','pwa.js','manifest.webmanifest','google-drive-setup.html','icons/icon.svg','icons/icon-192.png','icons/icon-512.png','icons/apple-touch-icon.png'];
 self.addEventListener('install', event => event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS))));
