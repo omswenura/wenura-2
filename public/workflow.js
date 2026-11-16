@@ -5,6 +5,41 @@ const cable=make('Cable','v1.0',[{title:'Selection & specifications',start:1,end
 const tws=make('TWS / OWS','v1.0',[{title:'Selection & specifications',start:1,end:14},{title:'UAE TDRA controls',start:15,end:23},{title:'Engineering & Boss approval',start:24,end:28},{title:'Order confirmation',start:29,end:32},{title:'Invoice & payment plan',start:33,end:37}],['Record preliminary product selection decision','Record price, MOQ, target manufacturing country and supplier','Confirm product type: TWS or OWS','Confirm ANC availability and performance','Confirm ENC availability and performance','Confirm design: with buds or without buds/open-ear','Confirm charging case battery capacity','Confirm individual earbud battery capacity','Confirm available colors','Confirm finish: oil-painted/glossy or matte','Confirm extra ear tips','Confirm supplier chip description','Confirm microphone type','Obtain explanation of feature operation','Confirm UAE export requirement','Request CE and RoHS certificates','Verify certificates match the correct model','Forward certificates and product details to Sumith Sir','Request TDRA approval process','Follow up until TDRA approval','Obtain TDRA QR code','Forward QR code to Media or Chinese packaging supplier','Verify QR code inside final packaging','Obtain physical TWS/OWS sample','Submit sample and specifications to engineering','Obtain engineering inspection approval','Present approved sample to Boss','Obtain Boss final product authorization','Determine order quantity','Communicate quantity to supplier','Attempt price negotiation','Confirm final product specifications and order details','Request supplier invoice','Verify invoice model, specifications, quantity and commercial details','Submit verified invoice to Boss','Obtain Boss invoice approval','Enter invoice data in WENU - PURCHASING PAYMENT PLAN']);
 const universal=[['U01','Preliminary product selection'],['U02','Record supplier and commercial details'],['U03','Record product specifications'],['U04','Obtain product sample'],['U05','Submit sample to engineering'],['U06','Obtain engineering approval'],['U07','Submit product for Boss authorization'],['U08','Obtain final product authorization'],['U09','Determine order quantity'],['U10','Notify supplier'],['U11','Negotiate purchase price'],['U12','Confirm accessories/components'],['U13','Confirm order with supplier'],['U14','Request supplier invoice'],['U15','Verify invoice'],['U16','Submit invoice to Boss'],['U17','Obtain invoice approval'],['U18','Update payment plan'],['P01','Determine packaging responsibility'],['P02','Select packaging method'],['P03','Send photos and code to Media'],['P04','Send features and engineering specifications'],['P05','Determine packaging dimensions'],['P06','Request product 3D files'],['P07','Forward 3D files to Media'],['P08','Monitor packaging and delivery'],['P09','Send sample to internal packaging facility'],['P10','Confirm packaging specifications'],['P11','Compare packaging costs'],['W01','Confirm sticker requirements'],['W02','Calculate quantity including 4% wastage'],['W03','Arrange sticker production'],['W04','Follow up production'],['W05','Confirm delivery to manufacturer'],['W06','Verify sticker application']];
 const api={templates:{charger,cable,tws},universal,catalogue:['Phone chargers','Phone cables','TWS / OWS','Power banks','Wired hands-free','Batteries','Back covers','Tempered glass','Speakers','Smartwatches','Computer accessories','Other cables','Key tags','Neck bands','Car chargers','Miscellaneous'],packaging:[['Neck Band','165 × 210 × 25','Standard'],['Neck Band','120 × 160 × 48','Special'],['Car Charger','90 × 160 × 40','Standard'],['TWS / OWS','90 × 160 × 35','Standard'],['Charger','96 × 166 × 38','Option 1'],['Charger','170 × 100 × 56','Option 2'],['Charger','170 × 100 × 56','Repeated source row'],['Wired Hands-Free','80 × 160 × 20','Standard'],['Cable — Low Price','60 × 160 × 20','Confirmed Cable category']],brands:['OMS','EXPERT','ONESAM','HOTTU'],tasks:charger.steps,stages:charger.sections.map(s=>({title:s.title,description:'Approved charger workflow',tasks:charger.steps.filter(x=>x.number>=s.start&&x.number<=s.end).map(x=>[x.id,x.label,'Record a confirmation before completion.'])})),isAvailable:(id,checks)=>{const a=charger.steps,i=a.findIndex(x=>x.id===id);return i>=0&&a.slice(0,i).every(x=>checks[x.id]);},nextTask:checks=>charger.steps.find(x=>!checks[x.id])||null};
+const neckband=make('Neck Band','v1.0 · pending approval',[
+  {title:'Selection & technical checks',start:1,end:11},
+  {title:'Engineering & Boss approval',start:12,end:16},
+  {title:'Order confirmation',start:17,end:22},
+  {title:'Invoice & payment plan',start:23,end:27}
+],[
+  'Record preliminary sample selection decision',
+  'Record price, MOQ, manufacturing country and supplier',
+  'Record battery capacity and battery information inside the neckband casing',
+  'Confirm voice-changing feature and operation',
+  'Confirm karaoke mode and operation',
+  'Confirm gaming mode and operation',
+  'Confirm microphone type, quality and performance',
+  'Confirm magnetic on/off functionality',
+  'Confirm touch sensor functions',
+  'Confirm talk-time duration',
+  'Confirm other special features and specifications',
+  'Obtain physical neckband sample',
+  'Hand over sample and gathered details to company engineer',
+  'Obtain engineering quality approval',
+  'Present engineering-approved neckband to Boss',
+  'Obtain Boss final product approval',
+  'Determine and finalize order quantity',
+  'Notify supplier of confirmed quantity',
+  'Attempt price negotiation',
+  'Confirm whether a cable is included',
+  'If included, identify cable type and its supplier',
+  'Confirm neckband order with supplier',
+  'Request supplier invoice',
+  'Verify invoice includes all requested specifications',
+  'Submit verified invoice to Boss',
+  'Obtain Boss invoice approval',
+  'Enter invoice data in WENU - PURCHASING PAYMENT PLAN'
+]);
+api.templates.neckband=neckband;
 // Keep the former 12-step sample flow available for existing local backups and tests.
 const legacyTasks=[['collect','Collect selected charger sample'],['appearance','Appearance'],['moq','Minimum order quantity (MOQ)'],['protocols','Charging protocols'],['price','Price & required quantity'],['certificate','Certificate'],['production','Production period'],['approval','Sample approved — hand over to company engineer'],['wattage','Actual wattage'],['comparison','Compare specifications with actual wattage'],['temperature','Temperature check'],['engineerProtocols','Protocol verification']];
 api.tasks=legacyTasks;
