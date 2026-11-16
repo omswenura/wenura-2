@@ -8,8 +8,8 @@ const api={templates:{charger,cable,tws},universal,catalogue:['Phone chargers','
 const neckband=make('Neck Band','v1.0 · pending approval',[
   {title:'Selection & technical checks',start:1,end:11},
   {title:'Engineering & Boss approval',start:12,end:16},
-  {title:'Order confirmation',start:17,end:22},
-  {title:'Invoice & payment plan',start:23,end:27}
+  {title:'Order confirmation',start:17,end:20},
+  {title:'Invoice & payment plan',start:21,end:25}
 ],[
   'Record preliminary sample selection decision',
   'Record price, MOQ, manufacturing country and supplier',
@@ -30,8 +30,6 @@ const neckband=make('Neck Band','v1.0 · pending approval',[
   'Determine and finalize order quantity',
   'Notify supplier of confirmed quantity',
   'Attempt price negotiation',
-  'Confirm whether a cable is included',
-  'If included, identify cable type and its supplier',
   'Confirm neckband order with supplier',
   'Request supplier invoice',
   'Verify invoice includes all requested specifications',
