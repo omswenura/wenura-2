@@ -1,6 +1,10 @@
-// Register the offline shell. Workflow state is handled by app.js.
+// Older app versions cached workflow scripts too aggressively. Remove their
+// service worker once so this control workspace always loads current workflows.
 if('serviceWorker' in navigator){
-  let reloading=false;
-  navigator.serviceWorker.addEventListener('controllerchange',()=>{if(!reloading){reloading=true;location.reload();}});
-  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+  window.addEventListener('load',async()=>{
+    const registrations=await navigator.serviceWorker.getRegistrations();
+    if(!registrations.length)return;
+    await Promise.all(registrations.map(registration=>registration.unregister()));
+    location.reload();
+  });
 }
