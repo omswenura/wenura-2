@@ -52,11 +52,12 @@ function references(){
 }
 function render(){setHeader();state.view==='references'?references():dashboard();}
 document.body.addEventListener('click',event=>{
-  const trigger=event.target.closest('[data-action],[data-view],[data-setup],[data-open]');if(!trigger)return;
+  const trigger=event.target.closest('[data-action],[data-view],[data-setup],[data-template],[data-open]');if(!trigger)return;
   if(trigger.dataset.view){state.view=trigger.dataset.view;render();return;}
   if(trigger.dataset.setup){setup(trigger.dataset.setup);return;}
+  if(trigger.dataset.template){setup(trigger.dataset.template);return;}
   if(trigger.dataset.open){state.active=trigger.dataset.open;save();setHeader();workflow(current());return;}
-  if(trigger.dataset.action==='setup'){setup('charger');return;}
+  if(trigger.dataset.action==='setup'||trigger.dataset.action==='new'){setup('charger');return;}
   if(trigger.dataset.action==='edit'){setup(current().template,current());}
 });
 document.body.addEventListener('change',event=>{if(!event.target.matches('[data-step]'))return;const record=current();if(!record)return;record.done[event.target.dataset.step]=event.target.checked;save();workflow(record);});
