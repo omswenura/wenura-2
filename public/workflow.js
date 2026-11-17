@@ -37,6 +37,41 @@ const neckband=make('Neck Band','v3.0 · approved',[
   'Obtain Boss invoice approval',
   'Enter invoice data in WENU - PURCHASING PAYMENT PLAN'
 ]);
+const mandatoryPackaging=[
+  'Determine packaging responsibility: supplier or internal',
+  'Select packaging approach',
+  'Provide product photos and product code to Media',
+  'Provide product features and engineering specifications to Media',
+  'Determine packaging dimensions',
+  'Request product 3D files from supplier',
+  'Forward product 3D files to Media',
+  'Monitor packaging production and delivery before manufacturing completion',
+  'For internal packaging, send product sample to packaging facility',
+  'Confirm packaging materials, printing, finishes and hooks',
+  'Compare packaging costs against reference costs'
+];
+const mandatoryStickers=[
+  'Confirm warranty-sticker requirements and product quantity',
+  'Calculate stickers at order quantity × 1.04, rounded up',
+  'Arrange production with 1F134 WARRANTY STICKERS',
+  'Follow up warranty-sticker production',
+  'Confirm delivery to product manufacturer',
+  'Verify warranty stickers are affixed to products'
+];
+function addMandatoryPackagingAndStickers(flow){
+  const packagingStart=flow.steps.length+1;
+  flow.sections.push({title:'Mandatory packaging',start:packagingStart,end:packagingStart+mandatoryPackaging.length-1});
+  flow.steps.push(...mandatoryPackaging.map((label,index)=>({id:flow.title.replace(/\W+/g,'').toLowerCase()+`-${packagingStart+index}`,number:packagingStart+index,label,section:'Mandatory packaging'})));
+  const stickerStart=flow.steps.length+1;
+  flow.sections.push({title:'Mandatory warranty stickers',start:stickerStart,end:stickerStart+mandatoryStickers.length-1});
+  flow.steps.push(...mandatoryStickers.map((label,index)=>({id:flow.title.replace(/\W+/g,'').toLowerCase()+`-${stickerStart+index}`,number:stickerStart+index,label,section:'Mandatory warranty stickers'})));
+}
+addMandatoryPackagingAndStickers(cable);
+addMandatoryPackagingAndStickers(tws);
+addMandatoryPackagingAndStickers(neckband);
+cable.version='v2.0 · packaging & stickers included';
+tws.version='v2.0 · packaging & stickers included';
+neckband.version='v4.0 · approved';
 api.templates.neckband=neckband;
 // Keep the former 12-step sample flow available for existing local backups and tests.
 const legacyTasks=[['collect','Collect selected charger sample'],['appearance','Appearance'],['moq','Minimum order quantity (MOQ)'],['protocols','Charging protocols'],['price','Price & required quantity'],['certificate','Certificate'],['production','Production period'],['approval','Sample approved — hand over to company engineer'],['wattage','Actual wattage'],['comparison','Compare specifications with actual wattage'],['temperature','Temperature check'],['engineerProtocols','Protocol verification']];
