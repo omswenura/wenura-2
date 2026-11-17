@@ -8,7 +8,7 @@ const esc=value=>String(value??'').replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&
 const current=()=>state.records.find(record=>record.id===state.active)||null;
 const template=id=>Workflow.templates[id];
 function createDraft(templateId){
-  const record={id:crypto.randomUUID(),template:templateId,name:'',po:'',brand:'OMS',supplier:'',destination:'Sri Lanka',quantity:'',deadline:'',blocker:'',done:{}};
+  const record={id:crypto.randomUUID(),template:templateId,name:'',po:'',brand:'OMS',supplier:'',unitPrice:'',currency:'USD',moq:'',manufacturingCountry:'',destination:'Sri Lanka',quantity:'',deadline:'',blocker:'',done:{}};
   state.records.push(record);state.active=record.id;save();return record;
 }
 function progress(record){const flow=template(record.template),done=Object.values(record.done).filter(Boolean).length;return{flow,done,next:flow.steps.find(step=>!record.done[step.id])};}
@@ -77,6 +77,10 @@ function setup(templateId,record=null){
   <label>PO number<input name="po" value="${esc(record?.po||'')}" maxlength="80" placeholder="Add when issued"></label>
   <label>Brand<select name="brand">${Workflow.brands.map(item=>`<option ${(record?.brand||'OMS')===item?'selected':''}>${item}</option>`).join('')}</select></label>
   <label>Supplier<input name="supplier" value="${esc(record?.supplier||'')}" maxlength="120" placeholder="Supplier name"></label>
+  <label>Unit price<input name="unitPrice" type="number" min="0" step="0.01" value="${esc(record?.unitPrice||'')}" placeholder="e.g. 4.50"></label>
+  <label>Currency<select name="currency">${['USD','LKR','AED','CNY','Other'].map(item=>`<option ${(record?.currency||'USD')===item?'selected':''}>${item}</option>`).join('')}</select></label>
+  <label>Minimum order quantity (MOQ)<input name="moq" type="number" min="1" value="${esc(record?.moq||'')}" placeholder="Supplier MOQ"></label>
+  <label>Manufacturing country<input name="manufacturingCountry" value="${esc(record?.manufacturingCountry||'')}" maxlength="80" placeholder="e.g. China"></label>
   <label>Destination<select name="destination">${['Sri Lanka','UAE','Other'].map(item=>`<option ${(record?.destination||'Sri Lanka')===item?'selected':''}>${item}</option>`).join('')}</select></label>
   <label>Order quantity<input name="quantity" type="number" min="1" value="${esc(record?.quantity||'')}" placeholder="Confirmed units"></label>
   <label>Deadline<input name="deadline" type="date" value="${esc(record?.deadline||'')}"></label>
