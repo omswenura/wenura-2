@@ -63,3 +63,7 @@ select{width:100%;padding:11px;border:1px solid var(--border);border-radius:6px;
   .data-actions{gap:10px}.data-actions button{font-size:13px;flex-basis:calc(50% - 10px)}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important}}
+
+/* Workflow navigation belongs in normal document flow; it must not cover titles. */
+.detail-head .back{position:static;transform:none;margin:0;align-self:flex-start;white-space:nowrap}
+@media(max-width:620px){.detail-head .back{margin:0 0 6px}.detail-head{gap:8px;padding-top:18px}}
