@@ -12,6 +12,50 @@ function createDraft(templateId){
   state.records.push(record);state.active=record.id;save();return record;
 }
 function progress(record){const flow=template(record.template),done=Object.values(record.done).filter(Boolean).length;return{flow,done,next:flow.steps.find(step=>!record.done[step.id])};}
+function selectField(record,name,label,options){
+  return `<label>${label}<select name="${name}"><option value="">Select…</option>${options.map(option=>`<option ${record?.[name]===option?'selected':''}>${option}</option>`).join('')}</select></label>`;
+}
+function textField(record,name,label,placeholder=''){
+  return `<label>${label}<input name="${name}" value="${esc(record?.[name]||'')}" maxlength="160" placeholder="${placeholder}"></label>`;
+}
+function technicalFields(templateId,record){
+  const fields={
+    charger:[
+      textField(record,'spec_wattage','Wattage','e.g. 65W'),
+      textField(record,'spec_ports','Ports','e.g. USB-C + USB-A'),
+      textField(record,'spec_protocols','Charging protocols','e.g. PD, QC'),
+      selectField(record,'spec_cable_included','Cable included?',['Yes','No']),
+      textField(record,'spec_certifications','Certifications','e.g. CE, RoHS')
+    ],
+    cable:[
+      selectField(record,'spec_material','Cable material',['TPE','PVC','Braided nylon/polyester','Silicone','Other']),
+      selectField(record,'spec_conductor','Conductor material',['Pure copper','Copper alloy','Aluminum-plated','Other']),
+      textField(record,'spec_electrical','Wattage / amperage / voltage','e.g. 60W · 3A · 20V'),
+      selectField(record,'spec_length','Length',['1m','2m','3m','Other']),
+      selectField(record,'spec_connectors','Connector combination',['USB-C','Lightning','Micro-USB','Type-C to Type-C','Type-C to Lightning','Other'])
+    ],
+    tws:[
+      selectField(record,'spec_product_type','Product type',['TWS','OWS']),
+      selectField(record,'spec_anc','ANC',['Included','Not included','To confirm']),
+      selectField(record,'spec_enc','ENC',['Included','Not included','To confirm']),
+      textField(record,'spec_case_battery','Charging-case battery capacity','e.g. 500 mAh'),
+      textField(record,'spec_bud_battery','Individual bud battery capacity','e.g. 40 mAh'),
+      selectField(record,'spec_finish','Surface finish',['Oil-painted / glossy','Matte','Other']),
+      selectField(record,'spec_tdra_destination','UAE TDRA requirement',['UAE — TDRA required','Not UAE','To confirm'])
+    ],
+    neckband:[
+      textField(record,'spec_battery','Battery capacity in casing','e.g. 300 mAh'),
+      selectField(record,'spec_voice_change','Voice-changing feature',['Included','Not included','To confirm']),
+      selectField(record,'spec_karaoke','Karaoke mode',['Included','Not included','To confirm']),
+      selectField(record,'spec_gaming','Gaming mode',['Included','Not included','To confirm']),
+      textField(record,'spec_microphone','Microphone details','Type, quality or supplier description'),
+      selectField(record,'spec_magnetic','Magnetic on/off',['Included','Not included','To confirm']),
+      selectField(record,'spec_touch','Touch sensors',['Included','Not included','To confirm']),
+      textField(record,'spec_talk_time','Talk time','e.g. 20 hours')
+    ]
+  };
+  return fields[templateId]||[];
+}
 function setHeader(){
   const record=current();
   $('recordTitle').textContent=record?(record.name||`New ${template(record.template).title} record`):'Purchasing control centre';
@@ -37,6 +81,7 @@ function setup(templateId,record=null){
   <label>Order quantity<input name="quantity" type="number" min="1" value="${esc(record?.quantity||'')}" placeholder="Confirmed units"></label>
   <label>Deadline<input name="deadline" type="date" value="${esc(record?.deadline||'')}"></label>
   <label class="wide-field">Current blocker / issue<textarea name="blocker" maxlength="1000" placeholder="Leave blank when no issue is confirmed">${esc(record?.blocker||'')}</textarea></label>
+  <section class="spec-section wide-field"><div><span class="eyebrow">WORKFLOW-SPECIFIC DATA</span><h2>${flow.title} selections</h2><p>Select the known options and enter the confirmed details for this product.</p></div><div class="spec-grid">${technicalFields(templateId,record).join('')}</div></section>
   </div><div class="form-actions"><button type="button" class="secondary" data-view="dashboard">Cancel</button><button class="primary">Save and open workflow</button></div></form>`;
   $('setupForm').onsubmit=event=>{event.preventDefault();const values=Object.fromEntries(new FormData(event.target));const target=record||createDraft(values.template);Object.assign(target,values);if(target.template!==values.template){target.done={};target.template=values.template;}state.active=target.id;save();setHeader();workflow(target);};
 }
