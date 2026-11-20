@@ -68,6 +68,14 @@ function technicalFields(templateId,record){
       selectField(record,'spec_plug_type','Plug type',['3.5 mm TRRS','USB-C','USB-A','6.3 mm','Other']),
       selectField(record,'spec_bud_configuration','Configuration',['With buds','Without buds','To confirm']),
       textField(record,'spec_safety_standards','Safety and technical standards','Supplier confirmation or certifications')
+    ],
+    battery:[
+      textField(record,'spec_energy_density','Energy density and capacity','mAh, Wh, cell type and dimensions'),
+      selectField(record,'spec_cell_technology','Cell technology',['Silicon-carbon anode','High-density pouch cell','Other','To confirm']),
+      selectField(record,'spec_protection_circuit','Safety / protection circuitry',['BMS','PCM','BMS + PCM','To confirm']),
+      textField(record,'spec_safety_controls','Safety controls','Separators, overcharge cutoff, temperature cutoff'),
+      textField(record,'spec_cycle_life','Cycle life and capacity retention','e.g. ≥80% after 500 cycles'),
+      textField(record,'spec_supplier_safety','Supplier safety confirmation','Standards, test reports or certifications')
     ]
   };
   return fields[templateId]||[];
