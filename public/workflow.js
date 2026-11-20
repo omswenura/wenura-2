@@ -40,28 +40,49 @@ const neckband=make('Neck Band','v3.0 · approved',[
 // These records are required during product selection for every product type.
 // Keep the existing step IDs intact so marks saved in the browser continue to
 // refer to the same original task after this requirement is introduced.
-function addUniversalSelectionRequirements(flow){
-  const selection=flow.sections[0];
-  const insertAt=selection.end;
+function insertWorkflowSteps(flow,sectionTitle,entries,position='end'){
+  const section=flow.sections.find(item=>item.title===sectionTitle);
+  if(!section)throw new Error(`Missing ${sectionTitle} section for ${flow.title}`);
+  const insertAt=position==='before-last'?section.end-1:section.end;
   const prefix=flow.title.replace(/\W+/g,'').toLowerCase();
-  flow.steps.splice(insertAt,0,
-    {id:`${prefix}-product-photographs`,label:'Obtain and attach product photographs'},
-    {id:`${prefix}-separate-product-invoice`,label:'Obtain a separate supplier invoice for this product'}
-  );
-  selection.end+=2;
-  flow.sections.slice(1).forEach(section=>{section.start+=2;section.end+=2;});
+  flow.steps.splice(insertAt,0,...entries.map(entry=>({id:`${prefix}-${entry.id}`,label:entry.label})));
+  section.end+=entries.length;
+  flow.sections.slice(flow.sections.indexOf(section)+1).forEach(item=>{item.start+=entries.length;item.end+=entries.length;});
   flow.steps.forEach((step,index)=>{
     step.number=index+1;
-    step.section=(flow.sections.find(section=>step.number>=section.start&&step.number<=section.end)||{}).title;
+    step.section=(flow.sections.find(item=>step.number>=item.start&&step.number<=item.end)||{}).title;
   });
+}
+function addUniversalSelectionRequirements(flow){
+  insertWorkflowSteps(flow,flow.sections[0].title,[
+    {id:'product-photographs',label:'Obtain and attach product photographs'},
+    {id:'separate-product-invoice',label:'Obtain a separate supplier invoice for this product'},
+    {id:'supplier-packaging-costs',label:'During price negotiation, if supplier handles packaging, confirm one-by-one packing, inner poly-bag and external lamination costs'},
+    {id:'product-logo-cost-and-placement',label:'If a logo is required on the product, confirm logo cost and exact placement'}
+  ]);
+}
+function addOrderConfirmationPackingDecision(flow){
+  insertWorkflowSteps(flow,'Order confirmation',[
+    {id:'individual-packing-decision',label:'Decide whether supplier will individually pack products or internal packaging will be used'}
+  ],'before-last');
 }
 addUniversalSelectionRequirements(charger);
 addUniversalSelectionRequirements(cable);
 addUniversalSelectionRequirements(tws);
 addUniversalSelectionRequirements(neckband);
+addOrderConfirmationPackingDecision(charger);
+addOrderConfirmationPackingDecision(cable);
+addOrderConfirmationPackingDecision(tws);
+addOrderConfirmationPackingDecision(neckband);
+insertWorkflowSteps(charger,'Packaging',[
+  {id:'packaging-design-and-use-details',label:'Provide packaging design requirements and product-use details to Media or the packaging designer'},
+  {id:'user-manual-review',label:'Obtain and review the user manual, if included with the product'}
+]);
 const mandatoryPackaging=[
   'Determine packaging responsibility: supplier or internal',
   'Select packaging approach',
+  'Provide packaging design requirements and product-use details to Media or the packaging designer',
+  'Obtain and review the user manual, if included with the product',
   'Provide product photos and product code to Media',
   'Provide product features and engineering specifications to Media',
   'Determine packaging dimensions',
