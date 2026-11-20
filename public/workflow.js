@@ -71,6 +71,10 @@ addUniversalSelectionRequirements(charger);
 addUniversalSelectionRequirements(cable);
 addUniversalSelectionRequirements(tws);
 addUniversalSelectionRequirements(neckband);
+// This accessory check applies only to true-wireless/open-wireless models.
+insertWorkflowSteps(tws,tws.sections[0].title,[
+  {id:'silicone-case-availability-price-colors',label:'Confirm whether the selected model includes a silicone case; record its price and available colours'}
+]);
 addOrderConfirmationPackingDecision(charger);
 addOrderConfirmationPackingDecision(cable);
 addOrderConfirmationPackingDecision(tws);
