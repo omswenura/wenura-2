@@ -61,6 +61,13 @@ function technicalFields(templateId,record){
       textField(record,'spec_insulation','Terminal and solder insulation','Rings, tape or heat-shrink tubing'),
       textField(record,'spec_safety_certifications','Safety certifications','e.g. CE, RoHS, UN38.3'),
       selectField(record,'spec_airport_restriction','Airport transport restriction',['Cleared with documents','Restriction risk — investigate','To confirm'])
+    ],
+    wiredheadset:[
+      textField(record,'spec_housing_headband','Housing and headband construction','Plastic housing, metal reinforcement, materials'),
+      textField(record,'spec_controls_strain_relief','Controls and strain relief','Volume wheel, mute switch, quick disconnect and cable reinforcement'),
+      selectField(record,'spec_plug_type','Plug type',['3.5 mm TRRS','USB-C','USB-A','6.3 mm','Other']),
+      selectField(record,'spec_bud_configuration','Configuration',['With buds','Without buds','To confirm']),
+      textField(record,'spec_safety_standards','Safety and technical standards','Supplier confirmation or certifications')
     ]
   };
   return fields[templateId]||[];

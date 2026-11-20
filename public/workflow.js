@@ -67,6 +67,34 @@ const powerbank=make('Power Bank','v1.0 · safety controls',[
   'Obtain Boss invoice approval',
   'Enter invoice data in WENU - PURCHASING PAYMENT PLAN'
 ]);
+const wiredheadset=make('Wired Headset','v1.0 · technical controls',[
+  {title:'Selection & technical checks',start:1,end:7},
+  {title:'Engineering & Boss approval',start:8,end:12},
+  {title:'Order confirmation',start:13,end:16},
+  {title:'Invoice & payment plan',start:17,end:21}
+],[
+  'Record preliminary wired-headset selection decision',
+  'Record price, MOQ, manufacturing country and supplier',
+  'Verify housing and headband construction, including plastic housing and metal reinforcement where applicable',
+  'Verify controls and strain relief: volume wheel, mute switch or quick-disconnect joint where required; reinforce cable entry points against tugging',
+  'Verify plug type matches intended devices: 3.5 mm TRRS for microphone and audio, USB-C, USB-A or 6.3 mm',
+  'Confirm configuration: with buds or without buds',
+  'Confirm all general wired-headset safety and technical standards with the supplier',
+  'Obtain physical wired-headset sample',
+  'Hand over sample and supplier technical details to company engineer',
+  'Obtain engineering quality and safety approval',
+  'Present engineering-approved wired headset to Boss',
+  'Obtain Boss final product approval',
+  'Determine and finalize order quantity',
+  'Notify supplier of confirmed quantity',
+  'Attempt price negotiation',
+  'Confirm wired-headset order with supplier',
+  'Request supplier invoice',
+  'Verify invoice includes all requested wired-headset specifications',
+  'Submit verified invoice to Boss',
+  'Obtain Boss invoice approval',
+  'Enter invoice data in WENU - PURCHASING PAYMENT PLAN'
+]);
 // These records are required during product selection for every product type.
 // Keep the existing step IDs intact so marks saved in the browser continue to
 // refer to the same original task after this requirement is introduced.
@@ -102,6 +130,7 @@ addUniversalSelectionRequirements(cable);
 addUniversalSelectionRequirements(tws);
 addUniversalSelectionRequirements(neckband);
 addUniversalSelectionRequirements(powerbank);
+addUniversalSelectionRequirements(wiredheadset);
 // This accessory check applies only to true-wireless/open-wireless models.
 insertWorkflowSteps(tws,tws.sections[0].title,[
   {id:'silicone-case-availability-price-colors',label:'Confirm whether the selected model includes a silicone case; record its price and available colours'}
@@ -111,6 +140,7 @@ addOrderConfirmationPackingDecision(cable);
 addOrderConfirmationPackingDecision(tws);
 addOrderConfirmationPackingDecision(neckband);
 addOrderConfirmationPackingDecision(powerbank);
+addOrderConfirmationPackingDecision(wiredheadset);
 insertWorkflowSteps(charger,'Packaging',[
   {id:'packaging-design-and-use-details',label:'Provide packaging design requirements and product-use details to Media or the packaging designer'},
   {id:'user-manual-review',label:'Obtain and review the user manual, if included with the product'}
@@ -150,12 +180,15 @@ addMandatoryPackagingAndStickers(cable);
 addMandatoryPackagingAndStickers(tws);
 addMandatoryPackagingAndStickers(neckband);
 addMandatoryPackagingAndStickers(powerbank);
+addMandatoryPackagingAndStickers(wiredheadset);
 cable.version='v2.0 · packaging & stickers included';
 tws.version='v2.0 · packaging & stickers included';
 neckband.version='v4.0 · approved';
 powerbank.version='v1.0 · safety controls included';
+wiredheadset.version='v1.0 · technical controls included';
 api.templates.neckband=neckband;
 api.templates.powerbank=powerbank;
+api.templates.wiredheadset=wiredheadset;
 // Keep the former 12-step sample flow available for existing local backups and tests.
 const legacyTasks=[['collect','Collect selected charger sample'],['appearance','Appearance'],['moq','Minimum order quantity (MOQ)'],['protocols','Charging protocols'],['price','Price & required quantity'],['certificate','Certificate'],['production','Production period'],['approval','Sample approved — hand over to company engineer'],['wattage','Actual wattage'],['comparison','Compare specifications with actual wattage'],['temperature','Temperature check'],['engineerProtocols','Protocol verification']];
 api.tasks=legacyTasks;
