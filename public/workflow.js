@@ -37,6 +37,28 @@ const neckband=make('Neck Band','v3.0 · approved',[
   'Obtain Boss invoice approval',
   'Enter invoice data in WENU - PURCHASING PAYMENT PLAN'
 ]);
+// These records are required during product selection for every product type.
+// Keep the existing step IDs intact so marks saved in the browser continue to
+// refer to the same original task after this requirement is introduced.
+function addUniversalSelectionRequirements(flow){
+  const selection=flow.sections[0];
+  const insertAt=selection.end;
+  const prefix=flow.title.replace(/\W+/g,'').toLowerCase();
+  flow.steps.splice(insertAt,0,
+    {id:`${prefix}-product-photographs`,label:'Obtain and attach product photographs'},
+    {id:`${prefix}-separate-product-invoice`,label:'Obtain a separate supplier invoice for this product'}
+  );
+  selection.end+=2;
+  flow.sections.slice(1).forEach(section=>{section.start+=2;section.end+=2;});
+  flow.steps.forEach((step,index)=>{
+    step.number=index+1;
+    step.section=(flow.sections.find(section=>step.number>=section.start&&step.number<=section.end)||{}).title;
+  });
+}
+addUniversalSelectionRequirements(charger);
+addUniversalSelectionRequirements(cable);
+addUniversalSelectionRequirements(tws);
+addUniversalSelectionRequirements(neckband);
 const mandatoryPackaging=[
   'Determine packaging responsibility: supplier or internal',
   'Select packaging approach',
