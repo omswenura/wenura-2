@@ -52,6 +52,15 @@ function technicalFields(templateId,record){
       selectField(record,'spec_magnetic','Magnetic on/off',['Included','Not included','To confirm']),
       selectField(record,'spec_touch','Touch sensors',['Included','Not included','To confirm']),
       textField(record,'spec_talk_time','Talk time','e.g. 20 hours')
+    ],
+    powerbank:[
+      textField(record,'spec_cell','Battery cells and matching','e.g. branded 18650 cells, matched batch'),
+      selectField(record,'spec_protection','Charging / protection circuitry',['BMS','PCM','Dedicated power-bank board','To confirm']),
+      textField(record,'spec_capacity','Rated vs. real output capacity','e.g. rated 10,000 mAh · tested 6,200 mAh'),
+      textField(record,'spec_connections','Wiring / connection method','Rated wire gauge or nickel strips'),
+      textField(record,'spec_insulation','Terminal and solder insulation','Rings, tape or heat-shrink tubing'),
+      textField(record,'spec_safety_certifications','Safety certifications','e.g. CE, RoHS, UN38.3'),
+      selectField(record,'spec_airport_restriction','Airport transport restriction',['Cleared with documents','Restriction risk — investigate','To confirm'])
     ]
   };
   return fields[templateId]||[];

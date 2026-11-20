@@ -37,6 +37,36 @@ const neckband=make('Neck Band','v3.0 · approved',[
   'Obtain Boss invoice approval',
   'Enter invoice data in WENU - PURCHASING PAYMENT PLAN'
 ]);
+const powerbank=make('Power Bank','v1.0 · safety controls',[
+  {title:'Selection & technical checks',start:1,end:9},
+  {title:'Engineering & Boss approval',start:10,end:14},
+  {title:'Order confirmation',start:15,end:18},
+  {title:'Invoice & payment plan',start:19,end:23}
+],[
+  'Record preliminary power-bank selection decision',
+  'Record price, MOQ, manufacturing country and supplier',
+  'Verify battery-cell type, reputable manufacturer, matching and batch consistency; record 18650 lithium-ion cells where applicable',
+  'Verify charging and protection circuitry: BMS, PCM or dedicated power-bank charging board',
+  'Verify rated capacity versus real output capacity in mAh',
+  'Verify appropriately rated wire gauges or nickel strips for all connections',
+  'Verify positive terminals and solder joints are insulated with insulating rings, tape or heat-shrink tubing',
+  'Verify safety certifications and confirm airport transport restrictions or rejection risks',
+  'Confirm all general power-bank safety and technical standards with the supplier',
+  'Obtain physical power-bank sample',
+  'Hand over sample and supplier technical details to company engineer',
+  'Obtain engineering quality and safety approval',
+  'Present engineering-approved power bank to Boss',
+  'Obtain Boss final product approval',
+  'Determine and finalize order quantity',
+  'Notify supplier of confirmed quantity',
+  'Attempt price negotiation',
+  'Confirm power-bank order with supplier',
+  'Request supplier invoice',
+  'Verify invoice includes all requested power-bank specifications and certifications',
+  'Submit verified invoice to Boss',
+  'Obtain Boss invoice approval',
+  'Enter invoice data in WENU - PURCHASING PAYMENT PLAN'
+]);
 // These records are required during product selection for every product type.
 // Keep the existing step IDs intact so marks saved in the browser continue to
 // refer to the same original task after this requirement is introduced.
@@ -71,6 +101,7 @@ addUniversalSelectionRequirements(charger);
 addUniversalSelectionRequirements(cable);
 addUniversalSelectionRequirements(tws);
 addUniversalSelectionRequirements(neckband);
+addUniversalSelectionRequirements(powerbank);
 // This accessory check applies only to true-wireless/open-wireless models.
 insertWorkflowSteps(tws,tws.sections[0].title,[
   {id:'silicone-case-availability-price-colors',label:'Confirm whether the selected model includes a silicone case; record its price and available colours'}
@@ -79,6 +110,7 @@ addOrderConfirmationPackingDecision(charger);
 addOrderConfirmationPackingDecision(cable);
 addOrderConfirmationPackingDecision(tws);
 addOrderConfirmationPackingDecision(neckband);
+addOrderConfirmationPackingDecision(powerbank);
 insertWorkflowSteps(charger,'Packaging',[
   {id:'packaging-design-and-use-details',label:'Provide packaging design requirements and product-use details to Media or the packaging designer'},
   {id:'user-manual-review',label:'Obtain and review the user manual, if included with the product'}
@@ -117,10 +149,13 @@ function addMandatoryPackagingAndStickers(flow){
 addMandatoryPackagingAndStickers(cable);
 addMandatoryPackagingAndStickers(tws);
 addMandatoryPackagingAndStickers(neckband);
+addMandatoryPackagingAndStickers(powerbank);
 cable.version='v2.0 · packaging & stickers included';
 tws.version='v2.0 · packaging & stickers included';
 neckband.version='v4.0 · approved';
+powerbank.version='v1.0 · safety controls included';
 api.templates.neckband=neckband;
+api.templates.powerbank=powerbank;
 // Keep the former 12-step sample flow available for existing local backups and tests.
 const legacyTasks=[['collect','Collect selected charger sample'],['appearance','Appearance'],['moq','Minimum order quantity (MOQ)'],['protocols','Charging protocols'],['price','Price & required quantity'],['certificate','Certificate'],['production','Production period'],['approval','Sample approved — hand over to company engineer'],['wattage','Actual wattage'],['comparison','Compare specifications with actual wattage'],['temperature','Temperature check'],['engineerProtocols','Protocol verification']];
 api.tasks=legacyTasks;
