@@ -58,7 +58,8 @@ function addUniversalSelectionRequirements(flow){
     {id:'product-photographs',label:'Obtain and attach product photographs'},
     {id:'separate-product-invoice',label:'Obtain a separate supplier invoice for this product'},
     {id:'supplier-packaging-costs',label:'During price negotiation, if supplier handles packaging, confirm one-by-one packing, inner poly-bag and external lamination costs'},
-    {id:'product-logo-cost-and-placement',label:'If a logo is required on the product, confirm logo cost and exact placement'}
+    {id:'product-logo-cost-and-placement',label:'If a logo is required on the product, confirm logo cost and exact placement'},
+    {id:'user-manual-inclusion',label:'Confirm whether a user manual is included and obtain it for review'}
   ]);
 }
 function addOrderConfirmationPackingDecision(flow){
