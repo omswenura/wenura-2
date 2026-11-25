@@ -71,7 +71,7 @@ const wiredheadset=make('Wired Headset','v1.0 · technical controls',[
   {title:'Selection & technical checks',start:1,end:7},
   {title:'Engineering & Boss approval',start:8,end:12},
   {title:'Order confirmation',start:13,end:16},
-  {title:'Invoice & payment plan',start:17,end:21}
+  {title:'Invoice & payment plan',start:17,end:22}
 ],[
   'Record preliminary wired-headset selection decision',
   'Record price, MOQ, manufacturing country and supplier',
@@ -122,6 +122,35 @@ const battery=make('Battery','v1.0 · safety controls',[
   'Obtain Boss invoice approval',
   'Enter invoice data in WENU - PURCHASING PAYMENT PLAN'
 ]);
+const backcoverglass=make('Back Covers / Tempered Glass','v1.0 · design controls',[
+  {title:'Selection & specifications',start:1,end:8},
+  {title:'Marketing & design approval',start:9,end:11},
+  {title:'Order confirmation',start:12,end:16},
+  {title:'Invoice & payment plan',start:17,end:22}
+],[
+  'Record preliminary back-cover or tempered-glass sample selection decision',
+  'Record price, MOQ, manufacturing country and supplier',
+  'Record available colour options for each selected item',
+  'Confirm whether internal fabric lining is included and record its cost',
+  'Confirm material type: TPU, silicone or other',
+  'Confirm MagSafe compatibility',
+  'Confirm target design: men, women or unisex',
+  'Obtain selected samples and the relevant supplier details for each item',
+  'Obtain marketing-team confirmation of the designs to be imported',
+  'Record marketing-confirmed designs for import',
+  'Analyse and finalize required quantity for each phone model',
+  'Provide the supplier with each approved design and required quantity by phone model',
+  'Determine and finalize total order quantity',
+  'Notify supplier of confirmed requirements',
+  'Attempt price negotiation',
+  'Confirm back-cover or tempered-glass order with supplier',
+  'Obtain complete packing lists from supplier',
+  'Request supplier invoice',
+  'Verify invoice includes requested product, design, model and quantity details',
+  'Submit verified invoice to Boss',
+  'Obtain Boss invoice approval',
+  'Enter invoice data in WENU - PURCHASING PAYMENT PLAN'
+]);
 // These records are required during product selection for every product type.
 // Keep the existing step IDs intact so marks saved in the browser continue to
 // refer to the same original task after this requirement is introduced.
@@ -159,6 +188,7 @@ addUniversalSelectionRequirements(neckband);
 addUniversalSelectionRequirements(powerbank);
 addUniversalSelectionRequirements(wiredheadset);
 addUniversalSelectionRequirements(battery);
+addUniversalSelectionRequirements(backcoverglass);
 // This accessory check applies only to true-wireless/open-wireless models.
 insertWorkflowSteps(tws,tws.sections[0].title,[
   {id:'silicone-case-availability-price-colors',label:'Confirm whether the selected model includes a silicone case; record its price and available colours'}
@@ -170,6 +200,7 @@ addOrderConfirmationPackingDecision(neckband);
 addOrderConfirmationPackingDecision(powerbank);
 addOrderConfirmationPackingDecision(wiredheadset);
 addOrderConfirmationPackingDecision(battery);
+addOrderConfirmationPackingDecision(backcoverglass);
 insertWorkflowSteps(charger,'Packaging',[
   {id:'packaging-design-and-use-details',label:'Provide packaging design requirements and product-use details to Media or the packaging designer'},
   {id:'user-manual-review',label:'Obtain and review the user manual, if included with the product'}
@@ -211,16 +242,19 @@ addMandatoryPackagingAndStickers(neckband);
 addMandatoryPackagingAndStickers(powerbank);
 addMandatoryPackagingAndStickers(wiredheadset);
 addMandatoryPackagingAndStickers(battery);
+addMandatoryPackagingAndStickers(backcoverglass);
 cable.version='v2.0 · packaging & stickers included';
 tws.version='v2.0 · packaging & stickers included';
 neckband.version='v4.0 · approved';
 powerbank.version='v1.0 · safety controls included';
 wiredheadset.version='v1.0 · technical controls included';
 battery.version='v1.0 · safety controls included';
+backcoverglass.version='v1.0 · design controls included';
 api.templates.neckband=neckband;
 api.templates.powerbank=powerbank;
 api.templates.wiredheadset=wiredheadset;
 api.templates.battery=battery;
+api.templates.backcoverglass=backcoverglass;
 // Keep the former 12-step sample flow available for existing local backups and tests.
 const legacyTasks=[['collect','Collect selected charger sample'],['appearance','Appearance'],['moq','Minimum order quantity (MOQ)'],['protocols','Charging protocols'],['price','Price & required quantity'],['certificate','Certificate'],['production','Production period'],['approval','Sample approved — hand over to company engineer'],['wattage','Actual wattage'],['comparison','Compare specifications with actual wattage'],['temperature','Temperature check'],['engineerProtocols','Protocol verification']];
 api.tasks=legacyTasks;

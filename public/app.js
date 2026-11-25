@@ -76,6 +76,16 @@ function technicalFields(templateId,record){
       textField(record,'spec_safety_controls','Safety controls','Separators, overcharge cutoff, temperature cutoff'),
       textField(record,'spec_cycle_life','Cycle life and capacity retention','e.g. ≥80% after 500 cycles'),
       textField(record,'spec_supplier_safety','Supplier safety confirmation','Standards, test reports or certifications')
+    ],
+    backcoverglass:[
+      selectField(record,'spec_product_category','Product category',['Back cover','Tempered glass']),
+      textField(record,'spec_colours','Available colours','List confirmed colours'),
+      selectField(record,'spec_fabric_lining','Internal fabric lining',['Included','Not included','To confirm']),
+      textField(record,'spec_fabric_lining_cost','Internal fabric lining cost','Enter price or supplier quotation'),
+      selectField(record,'spec_material_type','Material type',['TPU','Silicone','Other']),
+      selectField(record,'spec_magsafe','MagSafe compatibility',['Compatible','Not compatible','To confirm']),
+      selectField(record,'spec_target_design','Target design',['Men','Women','Unisex','To confirm']),
+      textField(record,'spec_model_quantities','Phone-model quantities','e.g. iPhone 15 — 200; Galaxy S24 — 150')
     ]
   };
   return fields[templateId]||[];
