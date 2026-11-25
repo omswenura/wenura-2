@@ -128,7 +128,7 @@ const backcoverglass=make('Back Covers / Tempered Glass','v1.0 · design control
   {title:'Order confirmation',start:12,end:16},
   {title:'Invoice & payment plan',start:17,end:22}
 ],[
-  'Record preliminary back-cover or tempered-glass sample selection decision',
+  'Record preliminary back-cover sample selection decision',
   'Record price, MOQ, manufacturing country and supplier',
   'Record available colour options for each selected item',
   'Confirm whether internal fabric lining is included and record its cost',
@@ -143,7 +143,7 @@ const backcoverglass=make('Back Covers / Tempered Glass','v1.0 · design control
   'Determine and finalize total order quantity',
   'Notify supplier of confirmed requirements',
   'Attempt price negotiation',
-  'Confirm back-cover or tempered-glass order with supplier',
+  'Confirm back-cover order with supplier',
   'Obtain complete packing lists from supplier',
   'Request supplier invoice',
   'Verify invoice includes requested product, design, model and quantity details',
@@ -243,6 +243,8 @@ addMandatoryPackagingAndStickers(powerbank);
 addMandatoryPackagingAndStickers(wiredheadset);
 addMandatoryPackagingAndStickers(battery);
 addMandatoryPackagingAndStickers(backcoverglass);
+// Preserve existing step IDs and records while displaying the corrected category.
+backcoverglass.title='Back Covers';
 cable.version='v2.0 · packaging & stickers included';
 tws.version='v2.0 · packaging & stickers included';
 neckband.version='v4.0 · approved';

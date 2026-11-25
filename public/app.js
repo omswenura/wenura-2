@@ -78,7 +78,6 @@ function technicalFields(templateId,record){
       textField(record,'spec_supplier_safety','Supplier safety confirmation','Standards, test reports or certifications')
     ],
     backcoverglass:[
-      selectField(record,'spec_product_category','Product category',['Back cover','Tempered glass']),
       textField(record,'spec_colours','Available colours','List confirmed colours'),
       selectField(record,'spec_fabric_lining','Internal fabric lining',['Included','Not included','To confirm']),
       textField(record,'spec_fabric_lining_cost','Internal fabric lining cost','Enter price or supplier quotation'),
