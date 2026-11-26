@@ -158,7 +158,7 @@ function setup(templateId,record=null){
   <label>Deadline<input name="deadline" type="date" value="${esc(record?.deadline||'')}"></label>
   <label class="wide-field">Current blocker / issue<textarea name="blocker" maxlength="1000" placeholder="Leave blank when no issue is confirmed">${esc(record?.blocker||'')}</textarea></label>
   <section class="spec-section wide-field"><div><span class="eyebrow">WORKFLOW-SPECIFIC DATA</span><h2>${flow.title} selections</h2><p>Select the known options and enter the confirmed details for this product.</p></div><div class="spec-grid">${technicalFields(templateId,record).join('')}</div></section>
-  </div><div class="form-actions"><button type="button" class="secondary" data-view="dashboard">Cancel</button><button class="primary">Save and open workflow</button></div></form>`;
+  </div><div class="form-actions">${record?'<button type="button" class="delete-record" data-action="delete-record">Delete this record</button>':''}<button type="button" class="secondary" data-view="dashboard">Cancel</button><button class="primary">Save and open workflow</button></div></form>`;
   const form=$('setupForm');
   if(!record)form.elements.template.addEventListener('change',event=>{$('poPreview').value=nextPo(event.target.value).number;});
   form.onsubmit=event=>{event.preventDefault();const values=Object.fromEntries(new FormData(event.target));const target=record||createDraft(values.template);const previousTemplate=target.template;if(record&&previousTemplate!==values.template){target.done={};target.po=generatePo(values.template);}else if(!target.po){target.po=generatePo(values.template);}Object.assign(target,values);state.active=target.id;save();setHeader();workflow(target);};
@@ -195,6 +195,13 @@ document.body.addEventListener('click',event=>{
   if(trigger.dataset.template){setup(trigger.dataset.template);return;}
   if(trigger.dataset.open){state.active=trigger.dataset.open;save();setHeader();workflow(current());return;}
   if(trigger.dataset.action==='setup'||trigger.dataset.action==='new'){setup('charger');return;}
+  if(trigger.dataset.action==='delete-record'){
+    const record=current();if(!record)return;
+    if(!window.confirm(`Delete "${record.name||'Unnamed product'}" (${record.po||'PO not assigned'})? Its details and workflow progress will be permanently removed from this browser.`))return;
+    const match=String(record.po||'').toUpperCase().match(/^([A-Z]+-\d{4}-)(\d+)$/);
+    if(match){state.poSequences=state.poSequences||{};state.poSequences[match[1]]=Math.max(Number(state.poSequences[match[1]])||0,Number(match[2]));}
+    state.records=state.records.filter(item=>item.id!==record.id);state.active=null;state.view='dashboard';save();render();return;
+  }
   if(trigger.dataset.action==='edit'){setup(current().template,current());}
 });
 document.body.addEventListener('change',event=>{if(event.target.id==='historyRecord'){const record=state.records.find(item=>item.id===event.target.value);if(record){state.active=record.id;save();setHeader();setup(record.template,record);}return;}if(!event.target.matches('[data-step]'))return;const record=current();if(!record)return;record.done[event.target.dataset.step]=event.target.checked;save();workflow(record);});
