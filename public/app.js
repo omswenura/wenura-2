@@ -33,6 +33,19 @@ function selectField(record,name,label,options){
 function textField(record,name,label,placeholder=''){
   return `<label>${label}<input name="${name}" value="${esc(record?.[name]||'')}" maxlength="160" placeholder="${placeholder}"></label>`;
 }
+function packagingSelections(record){
+  return `<div class="packaging-selections"><h3>Packaging selections</h3><p>Choose the confirmed details for this product. Changes are saved automatically.</p><div class="spec-grid">
+    ${selectField(record,'packaging_design','Packaging design',['Supplier-designed','Own-brand','To confirm'])}
+    ${selectField(record,'packaging_weight','Paper weight',['350g','375g','400g','450g','700g','725g','750g','To confirm'])}
+    ${selectField(record,'packaging_paper','Paper / finish',['Glossy','Matte','Vietnam paper','Silver paper','Other','To confirm'])}
+    ${selectField(record,'packaging_uv','UV finish',['Yes','No','To confirm'])}
+    ${selectField(record,'packaging_embossing','Embossing',['Yes','No','To confirm'])}
+    ${selectField(record,'packaging_printing','Printing',['Pantone','CMYK','Other','To confirm'])}
+    ${selectField(record,'packaging_hook','Plastic hook',['OMS red','EXPERT blue','Not applicable','To confirm'])}
+    ${selectField(record,'packaging_quote_comparison','Like-for-like quotation comparison',['Completed','Not yet completed','Not applicable'])}
+    ${textField(record,'packaging_quote_details','Quotation comparison details','Prices, supplier and reference')}
+  </div></div>`;
+}
 function technicalFields(templateId,record){
   const fields={
     charger:[
@@ -175,7 +188,7 @@ function workflow(record){
   $('screen').innerHTML=`<section class="detail-head"><button class="back" data-view="dashboard">← Overview</button><div><span class="eyebrow">PURCHASE ORDER WORKFLOW</span><h1>${flow.title}</h1><p>${esc(record.name||'New product record')} · ${esc(record.po||'PO not assigned')} · ${flow.steps.length} approved steps</p></div><button class="primary" data-action="edit">Edit details</button></section>
   <section class="progress-summary"><strong>${item.done} / ${flow.steps.length}</strong><div><span style="width:${item.done/flow.steps.length*100}%"></span></div><small>${record.completed?`Product marked completed${record.completedAt?` on ${esc(new Date(record.completedAt).toLocaleDateString())}`:''}. ${flow.steps.length-item.done} task(s) remain unchecked.`:(item.next?`Next action: ${esc(item.next.label)}`:'All steps marked as complete. Confirm the product is finished below.')}</small></section>
   <section class="completion-panel"><div><strong>Status: ${record.completed?'Completed':'In progress'}</strong><p>${record.completed?'Unchecked tasks remain visible below.':'You can confirm completion even if some tasks remain unchecked.'}</p></div><button type="button" class="${record.completed?'secondary':'primary'}" data-action="${record.completed?'reopen-product':'complete-product'}">${record.completed?'Reopen product':'Mark product completed'}</button></section>
-  <section class="steps-panel">${flow.sections.map(group=>`<section class="workflow-group"><header><span>${String(group.start).padStart(2,'0')}–${String(group.end).padStart(2,'0')}</span><h2>${group.title}</h2></header>${flow.steps.filter(step=>step.number>=group.start&&step.number<=group.end).map(step=>`<label class="step ${record.done[step.id]?'complete':''}"><input type="checkbox" data-step="${step.id}" ${record.done[step.id]?'checked':''}><span class="step-number">${String(step.number).padStart(2,'0')}</span><span>${esc(step.label)}${record.template==='charger'&&step.number===14?'<small>Sticker work starts after supplier confirmation and can run in parallel.</small>':''}${record.template==='charger'&&step.number===28?'<small>Company-supplied packaging must arrive before manufacturing completion.</small>':''}</span></label>`).join('')}</section>`).join('')}</section>`;
+  <section class="steps-panel">${flow.sections.map(group=>`<section class="workflow-group"><header><span>${String(group.start).padStart(2,'0')}–${String(group.end).padStart(2,'0')}</span><h2>${group.title}</h2></header>${group.title==='Packaging'||group.title==='Mandatory packaging'?packagingSelections(record):''}${flow.steps.filter(step=>step.number>=group.start&&step.number<=group.end).map(step=>`<label class="step ${record.done[step.id]?'complete':''}"><input type="checkbox" data-step="${step.id}" ${record.done[step.id]?'checked':''}><span class="step-number">${String(step.number).padStart(2,'0')}</span><span>${esc(step.label)}${record.template==='charger'&&step.number===14?'<small>Sticker work starts after supplier confirmation and can run in parallel.</small>':''}${record.template==='charger'&&step.number===28?'<small>Company-supplied packaging must arrive before manufacturing completion.</small>':''}</span></label>`).join('')}</section>`).join('')}</section>`;
 }
 function references(){
   $('screen').innerHTML=`<section class="detail-head"><button class="back" data-view="dashboard">← Overview</button><div><span class="eyebrow">MASTER REFERENCE</span><h1>Operating controls</h1><p>Universal controls support each product workflow; they do not replace approved step numbers.</p></div></section>
@@ -221,5 +234,5 @@ document.body.addEventListener('click',event=>{
   }
   if(trigger.dataset.action==='edit'){setup(current().template,current());}
 });
-document.body.addEventListener('change',event=>{if(event.target.id==='historyRecord'){const record=state.records.find(item=>item.id===event.target.value);if(record){state.active=record.id;save();setHeader();setup(record.template,record);}return;}if(!event.target.matches('[data-step]'))return;const record=current();if(!record)return;record.done[event.target.dataset.step]=event.target.checked;save();workflow(record);});
+document.body.addEventListener('change',event=>{if(event.target.id==='historyRecord'){const record=state.records.find(item=>item.id===event.target.value);if(record){state.active=record.id;save();setHeader();setup(record.template,record);}return;}if(event.target.closest('.packaging-selections')&&event.target.name.startsWith('packaging_')){const record=current();if(record){record[event.target.name]=event.target.value;save();}return;}if(!event.target.matches('[data-step]'))return;const record=current();if(!record)return;record.done[event.target.dataset.step]=event.target.checked;save();workflow(record);});
 render();
