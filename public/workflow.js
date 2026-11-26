@@ -151,6 +151,38 @@ const backcoverglass=make('Back Covers / Tempered Glass','v1.0 · design control
   'Obtain Boss invoice approval',
   'Enter invoice data in WENU - PURCHASING PAYMENT PLAN'
 ]);
+const temperedglass=make('Tempered Glass','v1.0 · supplier selection',[
+  {title:'Selection & specifications',start:1,end:11},
+  {title:'Sample & approvals',start:12,end:16},
+  {title:'Order confirmation',start:17,end:20},
+  {title:'Invoice & payment plan',start:21,end:25}
+],[
+  'Record preliminary tempered-glass selection, supplier, price, MOQ and manufacturing country',
+  'Confirm clear / standard 2.5D availability',
+  'Confirm full-coverage / curved 3D, 5D, 9D or edge-to-edge availability',
+  'Confirm UV glue (LOCA) availability',
+  'Confirm privacy glass availability',
+  'Confirm matte / anti-glare glass availability',
+  'Confirm anti-blue-light glass availability',
+  'Consult supplier about adhesive glue thickness for each selected type',
+  'Consult supplier about the differences between electroplating and spray coating',
+  'Confirm supplier packing formats: packs of 10, individually wrapped or individual boxes',
+  'Obtain supplier price quotations for the selected types and packing formats',
+  'Obtain samples of the selected glass protectors',
+  'Submit samples and supplier specifications to engineering',
+  'Obtain engineering quality approval',
+  'Present approved samples to Boss',
+  'Obtain Boss final product approval',
+  'Determine and finalize order quantity',
+  'Notify supplier of confirmed quantity',
+  'Attempt price negotiation',
+  'Confirm selected glass types, models, packing format and order with supplier',
+  'Request a separate supplier invoice for this product',
+  'Verify invoice includes the requested specifications, quantities and prices',
+  'Submit verified invoice to Boss',
+  'Obtain Boss invoice approval',
+  'Enter invoice data in WENU - PURCHASING PAYMENT PLAN'
+]);
 // These records are required during product selection for every product type.
 // Keep the existing step IDs intact so marks saved in the browser continue to
 // refer to the same original task after this requirement is introduced.
@@ -257,6 +289,7 @@ api.templates.powerbank=powerbank;
 api.templates.wiredheadset=wiredheadset;
 api.templates.battery=battery;
 api.templates.backcoverglass=backcoverglass;
+api.templates.temperedglass=temperedglass;
 // Keep the former 12-step sample flow available for existing local backups and tests.
 const legacyTasks=[['collect','Collect selected charger sample'],['appearance','Appearance'],['moq','Minimum order quantity (MOQ)'],['protocols','Charging protocols'],['price','Price & required quantity'],['certificate','Certificate'],['production','Production period'],['approval','Sample approved — hand over to company engineer'],['wattage','Actual wattage'],['comparison','Compare specifications with actual wattage'],['temperature','Temperature check'],['engineerProtocols','Protocol verification']];
 api.tasks=legacyTasks;

@@ -77,6 +77,13 @@ function technicalFields(templateId,record){
       textField(record,'spec_cycle_life','Cycle life and capacity retention','e.g. ≥80% after 500 cycles'),
       textField(record,'spec_supplier_safety','Supplier safety confirmation','Standards, test reports or certifications')
     ],
+    temperedglass:[
+      selectField(record,'spec_glass_type','Glass type',['Clear / standard (2.5D)','Full-coverage / curved (3D, 5D, 9D, edge-to-edge)','UV glue (LOCA)','Privacy','Matte / anti-glare','Anti-blue light','Other']),
+      textField(record,'spec_adhesive_thickness','Adhesive glue thickness','Supplier specification'),
+      textField(record,'spec_coating_difference','Electroplating vs spray coating','Supplier explanation'),
+      selectField(record,'spec_packing_format','Supplier packing format',['Pack of 10','Individually wrapped','Individual box','Other','To confirm']),
+      textField(record,'spec_quote','Supplier quotation','Price, currency and packing format')
+    ],
     backcoverglass:[
       textField(record,'spec_colours','Available colours','List confirmed colours'),
       selectField(record,'spec_fabric_lining','Internal fabric lining',['Included','Not included','To confirm']),
