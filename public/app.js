@@ -51,6 +51,8 @@ function technicalFields(templateId,record){
     ],
     tws:[
       selectField(record,'spec_product_type','Product type',['TWS','OWS']),
+      textField(record,'spec_chip','Chip used (supplier-provided)','Manufacturer and chip model'),
+      `<label id="twsBudField">TWS bud configuration<select name="spec_tws_bud_configuration"><option value="">Select…</option>${['WITH BUDS','WITHOUT BUDS'].map(option=>`<option ${record?.spec_tws_bud_configuration===option?'selected':''}>${option}</option>`).join('')}</select></label>`,
       selectField(record,'spec_silicone_cover_included','Silicone cover included?',['Yes','No','To confirm']),
       textField(record,'spec_silicone_cover_price','Silicone cover price','Enter price and currency'),
       textField(record,'spec_silicone_cover_colours','Silicone cover colours','Available colours'),
@@ -161,6 +163,11 @@ function setup(templateId,record=null){
   </div><div class="form-actions">${record?'<button type="button" class="delete-record" data-action="delete-record">Delete this record</button>':''}<button type="button" class="secondary" data-view="dashboard">Cancel</button><button class="primary">Save and open workflow</button></div></form>`;
   const form=$('setupForm');
   if(!record)form.elements.template.addEventListener('change',event=>{$('poPreview').value=nextPo(event.target.value).number;});
+  const productType=form.elements.spec_product_type,budConfiguration=form.elements.spec_tws_bud_configuration;
+  if(productType&&budConfiguration){
+    const updateBudField=()=>{const isTws=productType.value==='TWS';$('twsBudField').hidden=!isTws;budConfiguration.required=isTws;};
+    productType.addEventListener('change',updateBudField);updateBudField();
+  }
   form.onsubmit=event=>{event.preventDefault();const values=Object.fromEntries(new FormData(event.target));const target=record||createDraft(values.template);const previousTemplate=target.template;if(record&&previousTemplate!==values.template){target.done={};target.po=generatePo(values.template);}else if(!target.po){target.po=generatePo(values.template);}Object.assign(target,values);state.active=target.id;save();setHeader();workflow(target);};
 }
 function workflow(record){
