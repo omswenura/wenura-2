@@ -275,6 +275,16 @@ addMandatoryPackagingAndStickers(powerbank);
 addMandatoryPackagingAndStickers(wiredheadset);
 addMandatoryPackagingAndStickers(battery);
 addMandatoryPackagingAndStickers(backcoverglass);
+const packagingStandards=[
+  {id:'standard-packaging-design',label:'Select supplier-designed or own-brand packaging for the product'},
+  {id:'standard-paper-weight',label:'Confirm packaging paper weight: 350g, 375g, 400g, 450g, 700g, 725g or 750g'},
+  {id:'standard-paper-finish',label:'Confirm glossy, matte, Vietnam or silver paper and UV or embossing where applicable'},
+  {id:'standard-print-hooks',label:'Use Pantone printing where possible, otherwise CMYK; confirm plastic hooks are OMS red or EXPERT blue'},
+  {id:'standard-quotation-comparison',label:'Compare packaging quotations against like-for-like references before approval'}
+];
+for(const flow of [charger,cable,tws,neckband,powerbank,wiredheadset,battery,backcoverglass]){
+  insertWorkflowSteps(flow,flow===charger?'Packaging':'Mandatory packaging',packagingStandards);
+}
 // Preserve existing step IDs and records while displaying the corrected category.
 backcoverglass.title='Back Covers';
 cable.version='v2.0 · packaging & stickers included';
