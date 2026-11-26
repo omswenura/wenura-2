@@ -8,16 +8,19 @@ const esc=value=>String(value??'').replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&
 const current=()=>state.records.find(record=>record.id===state.active)||null;
 const template=id=>Workflow.templates[id];
 const PO_PREFIX={charger:'CHG',cable:'CBL',tws:'TWS',neckband:'NKB',powerbank:'PWB',wiredheadset:'WHS',battery:'BAT',backcoverglass:'BCV',temperedglass:'TGL'};
-function generatePo(templateId){
+function nextPo(templateId){
   const prefix=PO_PREFIX[templateId];
   if(!prefix)throw new Error('Unknown product category');
   const year=new Date().getFullYear(),base=`${prefix}-${year}-`;
-  state.poSequences=state.poSequences||{};
   const existing=state.records.reduce((max,record)=>{const po=String(record.po||'').toUpperCase();const suffix=po.startsWith(base)?po.slice(base.length):'';return /^\d+$/.test(suffix)?Math.max(max,Number(suffix)):max;},0);
-  const sequence=Math.max(existing,Number(state.poSequences[base])||0)+1;
-  state.poSequences[base]=sequence;
-  const candidate=`${base}${String(sequence).padStart(4,'0')}`;
-  return candidate;
+  const sequence=Math.max(existing,Number(state.poSequences?.[base])||0)+1;
+  return {number:`${base}${String(sequence).padStart(4,'0')}`,base,sequence};
+}
+function generatePo(templateId){
+  const next=nextPo(templateId);
+  state.poSequences=state.poSequences||{};
+  state.poSequences[next.base]=next.sequence;
+  return next.number;
 }
 function createDraft(templateId){
   const record={id:crypto.randomUUID(),template:templateId,name:'',po:generatePo(templateId),brand:'OMS',supplier:'',unitPrice:'',currency:'USD',moq:'',manufacturingCountry:'',destination:'Sri Lanka',quantity:'',deadline:'',blocker:'',done:{}};
@@ -142,7 +145,7 @@ function setup(templateId,record=null){
   <label>Product / model<input name="name" value="${esc(record?.name||'')}" maxlength="120" placeholder="e.g. 65W USB-C charger"></label>
   <label>Previously produced?<select name="previouslyProduced"><option value="no" ${record?.previouslyProduced!=='yes'?'selected':''}>No / not confirmed</option><option value="yes" ${record?.previouslyProduced==='yes'?'selected':''}>Yes — produced previously</option></select></label>
   <label>Production date<input name="productionDate" type="date" value="${esc(record?.productionDate||'')}"></label>
-  <label>PO number<input value="${esc(record?.po||'Generated when saved')}" readonly aria-describedby="poHelp"><small id="poHelp">Generated automatically for each product record.</small></label>
+  <label>PO number<input id="poPreview" value="${esc(record?.po||nextPo(templateId).number)}" readonly aria-describedby="poHelp"><small id="poHelp">${record?.po?'Assigned PO number.':'Proposed number; confirmed when you save the record.'}</small></label>
   <label>Brand<select name="brand">${Workflow.brands.map(item=>`<option ${(record?.brand||'OMS')===item?'selected':''}>${item}</option>`).join('')}</select></label>
   <label>Supplier<input name="supplier" value="${esc(record?.supplier||'')}" maxlength="120" placeholder="Supplier name"></label>
   <label>Unit price<input name="unitPrice" type="number" min="0" step="0.01" value="${esc(record?.unitPrice||'')}" placeholder="e.g. 4.50"></label>
@@ -156,7 +159,9 @@ function setup(templateId,record=null){
   <label class="wide-field">Current blocker / issue<textarea name="blocker" maxlength="1000" placeholder="Leave blank when no issue is confirmed">${esc(record?.blocker||'')}</textarea></label>
   <section class="spec-section wide-field"><div><span class="eyebrow">WORKFLOW-SPECIFIC DATA</span><h2>${flow.title} selections</h2><p>Select the known options and enter the confirmed details for this product.</p></div><div class="spec-grid">${technicalFields(templateId,record).join('')}</div></section>
   </div><div class="form-actions"><button type="button" class="secondary" data-view="dashboard">Cancel</button><button class="primary">Save and open workflow</button></div></form>`;
-  $('setupForm').onsubmit=event=>{event.preventDefault();const values=Object.fromEntries(new FormData(event.target));const target=record||createDraft(values.template);const previousTemplate=target.template;if(record&&previousTemplate!==values.template){target.done={};target.po=generatePo(values.template);}else if(!target.po){target.po=generatePo(values.template);}Object.assign(target,values);state.active=target.id;save();setHeader();workflow(target);};
+  const form=$('setupForm');
+  if(!record)form.elements.template.addEventListener('change',event=>{$('poPreview').value=nextPo(event.target.value).number;});
+  form.onsubmit=event=>{event.preventDefault();const values=Object.fromEntries(new FormData(event.target));const target=record||createDraft(values.template);const previousTemplate=target.template;if(record&&previousTemplate!==values.template){target.done={};target.po=generatePo(values.template);}else if(!target.po){target.po=generatePo(values.template);}Object.assign(target,values);state.active=target.id;save();setHeader();workflow(target);};
 }
 function workflow(record){
   const flow=template(record.template), item=progress(record);
