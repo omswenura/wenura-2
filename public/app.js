@@ -42,6 +42,8 @@ function packagingSelections(record){
     ${selectField(record,'packaging_embossing','Embossing',['Yes','No','To confirm'])}
     ${selectField(record,'packaging_printing','Printing',['Pantone','CMYK','Other','To confirm'])}
     ${selectField(record,'packaging_hook','Plastic hook',['OMS red','EXPERT blue','Not applicable','To confirm'])}
+    ${textField(record,'packaging_package_cost','Package cost','Enter amount and currency, e.g. USD 0.25 per unit')}
+    ${textField(record,'packaging_hook_cost','Packing-hook cost','Enter amount and currency, e.g. USD 0.03 per hook')}
     ${selectField(record,'packaging_quote_comparison','Like-for-like quotation comparison',['Completed','Not yet completed','Not applicable'])}
     ${textField(record,'packaging_quote_details','Quotation comparison details','Prices, supplier and reference')}
   </div></div>`;
