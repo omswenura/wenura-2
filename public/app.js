@@ -26,7 +26,7 @@ function createDraft(templateId){
   const record={id:crypto.randomUUID(),template:templateId,name:'',po:generatePo(templateId),brand:'OMS',supplier:'',unitPrice:'',currency:'USD',moq:'',manufacturingCountry:'',destination:'Sri Lanka',quantity:'',deadline:'',blocker:'',done:{}};
   state.records.push(record);state.active=record.id;save();return record;
 }
-function progress(record){const flow=template(record.template),done=Object.values(record.done).filter(Boolean).length;return{flow,done,next:flow.steps.find(step=>!record.done[step.id])};}
+function progress(record){const flow=template(record.template),done=flow.steps.filter(step=>record.done?.[step.id]).length;return{flow,done,next:flow.steps.find(step=>!record.done?.[step.id])};}
 function selectField(record,name,label,options){
   return `<label>${label}<select name="${name}"><option value="">Select…</option>${options.map(option=>`<option ${record?.[name]===option?'selected':''}>${option}</option>`).join('')}</select></label>`;
 }
@@ -173,7 +173,8 @@ function setup(templateId,record=null){
 function workflow(record){
   const flow=template(record.template), item=progress(record);
   $('screen').innerHTML=`<section class="detail-head"><button class="back" data-view="dashboard">← Overview</button><div><span class="eyebrow">PURCHASE ORDER WORKFLOW</span><h1>${flow.title}</h1><p>${esc(record.name||'New product record')} · ${esc(record.po||'PO not assigned')} · ${flow.steps.length} approved steps</p></div><button class="primary" data-action="edit">Edit details</button></section>
-  <section class="progress-summary"><strong>${item.done} / ${flow.steps.length}</strong><div><span style="width:${item.done/flow.steps.length*100}%"></span></div><small>${item.next?`Next action: ${esc(item.next.label)}`:'All steps marked as complete'}</small></section>
+  <section class="progress-summary"><strong>${item.done} / ${flow.steps.length}</strong><div><span style="width:${item.done/flow.steps.length*100}%"></span></div><small>${record.completed?`Product marked completed${record.completedAt?` on ${esc(new Date(record.completedAt).toLocaleDateString())}`:''}. ${flow.steps.length-item.done} task(s) remain unchecked.`:(item.next?`Next action: ${esc(item.next.label)}`:'All steps marked as complete. Confirm the product is finished below.')}</small></section>
+  <section class="completion-panel"><div><strong>Status: ${record.completed?'Completed':'In progress'}</strong><p>${record.completed?'Unchecked tasks remain visible below.':'You can confirm completion even if some tasks remain unchecked.'}</p></div><button type="button" class="${record.completed?'secondary':'primary'}" data-action="${record.completed?'reopen-product':'complete-product'}">${record.completed?'Reopen product':'Mark product completed'}</button></section>
   <section class="steps-panel">${flow.sections.map(group=>`<section class="workflow-group"><header><span>${String(group.start).padStart(2,'0')}–${String(group.end).padStart(2,'0')}</span><h2>${group.title}</h2></header>${flow.steps.filter(step=>step.number>=group.start&&step.number<=group.end).map(step=>`<label class="step ${record.done[step.id]?'complete':''}"><input type="checkbox" data-step="${step.id}" ${record.done[step.id]?'checked':''}><span class="step-number">${String(step.number).padStart(2,'0')}</span><span>${esc(step.label)}${record.template==='charger'&&step.number===14?'<small>Sticker work starts after supplier confirmation and can run in parallel.</small>':''}${record.template==='charger'&&step.number===28?'<small>Company-supplied packaging must arrive before manufacturing completion.</small>':''}</span></label>`).join('')}</section>`).join('')}</section>`;
 }
 function references(){
@@ -202,6 +203,15 @@ document.body.addEventListener('click',event=>{
   if(trigger.dataset.template){setup(trigger.dataset.template);return;}
   if(trigger.dataset.open){state.active=trigger.dataset.open;save();setHeader();workflow(current());return;}
   if(trigger.dataset.action==='setup'||trigger.dataset.action==='new'){setup('charger');return;}
+  if(trigger.dataset.action==='complete-product'||trigger.dataset.action==='reopen-product'){
+    const record=current();if(!record)return;
+    if(trigger.dataset.action==='complete-product'){
+      const item=progress(record),remaining=item.flow.steps.length-item.done;
+      if(!window.confirm(`Mark "${record.name||'Unnamed product'}" (${record.po||'PO not assigned'}) as completed? ${remaining} task(s) remain unchecked and will stay visible.`))return;
+      record.completed=true;record.completedAt=new Date().toISOString();
+    }else{record.completed=false;record.completedAt='';}
+    save();workflow(record);return;
+  }
   if(trigger.dataset.action==='delete-record'){
     const record=current();if(!record)return;
     if(!window.confirm(`Delete "${record.name||'Unnamed product'}" (${record.po||'PO not assigned'})? Its details and workflow progress will be permanently removed from this browser.`))return;
