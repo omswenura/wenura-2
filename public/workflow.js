@@ -223,7 +223,7 @@ addUniversalSelectionRequirements(battery);
 addUniversalSelectionRequirements(backcoverglass);
 // This accessory check applies only to true-wireless/open-wireless models.
 insertWorkflowSteps(tws,tws.sections[0].title,[
-  {id:'silicone-case-availability-price-colors',label:'Confirm whether the selected model includes a silicone case; record its price and available colours'}
+  {id:'silicone-case-availability-price-colors',label:'Confirm with supplier whether a silicone cover and hook are included; record the price of each and available silicone-cover colours'}
 ]);
 addOrderConfirmationPackingDecision(charger);
 addOrderConfirmationPackingDecision(cable);

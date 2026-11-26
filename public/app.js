@@ -36,6 +36,11 @@ function technicalFields(templateId,record){
     ],
     tws:[
       selectField(record,'spec_product_type','Product type',['TWS','OWS']),
+      selectField(record,'spec_silicone_cover_included','Silicone cover included?',['Yes','No','To confirm']),
+      textField(record,'spec_silicone_cover_price','Silicone cover price','Enter price and currency'),
+      textField(record,'spec_silicone_cover_colours','Silicone cover colours','Available colours'),
+      selectField(record,'spec_hook_included','Hook included?',['Yes','No','To confirm']),
+      textField(record,'spec_hook_price','Hook price','Enter price and currency'),
       selectField(record,'spec_anc','ANC',['Included','Not included','To confirm']),
       selectField(record,'spec_enc','ENC',['Included','Not included','To confirm']),
       textField(record,'spec_case_battery','Charging-case battery capacity','e.g. 500 mAh'),
